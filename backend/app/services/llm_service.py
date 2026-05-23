@@ -1,0 +1,65 @@
+from langchain_openai import ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+from app.config import Settings
+
+
+SYSTEM_PROMPT = """你是一个企业知识库助手。请严格基于以下提供的文档内容回答问题。
+
+规则：
+1. 只根据提供的文档内容回答，不要编造信息
+2. 如果文档中没有相关信息，请明确回复"未找到相关内容"
+3. 在回答末尾列出引用的文档来源
+4. 回答简洁准确，使用中文"""
+
+
+class LLMService:
+    def __init__(self, settings: Settings):
+        self.settings = settings
+        self.llm = ChatOpenAI(
+            model=settings.deepseek_model,
+            api_key=settings.deepseek_api_key,
+            base_url=settings.deepseek_base_url,
+            temperature=settings.deepseek_temperature,
+            max_tokens=settings.deepseek_max_tokens,
+            request_timeout=settings.deepseek_timeout,
+            max_retries=settings.deepseek_max_retries,
+        )
+        self._answer_chain = self._build_answer_chain()
+
+    def _build_answer_chain(self):
+        prompt = ChatPromptTemplate.from_messages([
+            ("system", SYSTEM_PROMPT),
+            ("human", "文档内容：\n{context}\n\n问题：{question}\n\n回答："),
+        ])
+        return prompt | self.llm | StrOutputParser()
+
+    def retrieve_and_rerank(self, question: str, retriever, reranker) -> list:
+        """Run retrieval + reranking once, return the document list."""
+        docs = retriever.invoke(question)
+        if reranker and docs:
+            docs = reranker.compress_documents(docs, question)
+        return docs
+
+    def build_answer_chain(self):
+        """Return a chain that takes {context, question} and returns the answer string."""
+        return self._answer_chain
+
+    def _format_context(self, documents) -> str:
+        seen = set()
+        parts = []
+        for doc in documents:
+            parent_id = doc.metadata.get("parent_doc_id", "")
+            if parent_id in seen:
+                continue
+            seen.add(parent_id)
+            parts.append(
+                f"[来源: {doc.metadata.get('doc_title', '未知')}]\n"
+                f"{doc.metadata.get('parent_text', doc.page_content)}"
+            )
+        return "\n\n---\n\n".join(parts)
+
+    def _extract_sources(self, documents) -> list[str]:
+        return list(dict.fromkeys(
+            d.metadata.get("doc_title", "未知") for d in documents
+        ))[:5]
