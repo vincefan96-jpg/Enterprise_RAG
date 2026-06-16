@@ -97,8 +97,8 @@ npm run dev                     # → http://localhost:5173
 ## 分块策略（Parent-Child）
 
 文档经过两次分割：
-- **父块**（1500 字符）：为 LLM 提供完整上下文
-- **子块**（500 字符）：索引到 Milvus 用于检索
+- **父块**（800 字符）：为 LLM 提供完整上下文
+- **子块**（200 字符）：索引到 Milvus 用于检索
 
 每个子块关联一个父块，LLM 上下文构建时按 `parent_doc_id` 去重，确保每段父块在 Prompt 中只出现一次。
 
@@ -111,11 +111,11 @@ npm run dev                     # → http://localhost:5173
 | `MILVUS_URI` | Milvus 地址 | `http://localhost:19530` |
 | `BGE_DEVICE` | 嵌入模型设备 | `cpu` |
 | `RERANKER_DEVICE` | 重排序模型设备 | `cpu` |
-| `HYBRID_DENSE_TOP_K` | Dense 检索候选数 | 30 |
-| `HYBRID_SPARSE_TOP_K` | Sparse 检索候选数 | 30 |
+| `HYBRID_DENSE_TOP_K` | Dense 检索候选数 | 50 |
+| `HYBRID_SPARSE_TOP_K` | Sparse 检索候选数 | 50 |
 | `RERANKER_TOP_N` | 重排序后文档数 | 5 |
-| `PARENT_CHUNK_SIZE` | 父块大小 | 1500 |
-| `CHILD_CHUNK_SIZE` | 子块大小 | 500 |
+| `PARENT_CHUNK_SIZE` | 父块大小 | 800 |
+| `CHILD_CHUNK_SIZE` | 子块大小 | 200 |
 
 完整配置见 `.env.example`。
 
