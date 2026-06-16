@@ -23,13 +23,15 @@ class Settings(BaseSettings):
     deepseek_timeout: int = 60
     deepseek_max_retries: int = 2
 
-    hybrid_dense_top_k: int = 30
-    hybrid_sparse_top_k: int = 30
-    rrf_k: int = 60
-    hybrid_fusion_top_k: int = 10
+    milvus_nprobe: int = 16
 
-    parent_chunk_size: int = 1500
-    child_chunk_size: int = 500
+    hybrid_dense_top_k: int = 50
+    hybrid_sparse_top_k: int = 50
+    rrf_k: int = 60
+    hybrid_fusion_top_k: int = 20
+
+    parent_chunk_size: int = 800
+    child_chunk_size: int = 200
     chunk_overlap: int = 100
 
     upload_dir: str = "./uploads"
