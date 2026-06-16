@@ -59,7 +59,7 @@ async def query(request: Request, body: QueryRequest):
     docs = await asyncio.to_thread(
         llm_service.retrieve_and_rerank, body.question, retriever, reranker
     )
-    context = llm_service._format_context(docs, body.question)
+    context = llm_service._format_context(docs)
     sources = llm_service._extract_sources(docs)
 
     chain = llm_service.build_answer_chain()
@@ -80,7 +80,7 @@ async def query_stream(request: Request, body: QueryRequest):
             docs = await asyncio.to_thread(
                 llm_service.retrieve_and_rerank, body.question, retriever, reranker
             )
-            context = llm_service._format_context(docs, body.question)
+            context = llm_service._format_context(docs)
             sources = llm_service._extract_sources(docs)
 
             yield f"data: {json.dumps({'type': 'status', 'message': '正在生成回答...'})}\n\n"

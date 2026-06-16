@@ -9,6 +9,7 @@ class MilvusStore:
     def __init__(self, settings: Settings):
         self.settings = settings
         self.client = None
+        self._has_file_path_field = False
 
     def connect(self):
         self.client = MilvusClient(uri=self.settings.milvus_uri)
@@ -18,8 +19,13 @@ class MilvusStore:
         name = self.settings.milvus_collection
 
         if self.client.has_collection(name):
+            desc = self.client.describe_collection(name)
+            field_names = {f["name"] for f in desc["fields"]}
+            self._has_file_path_field = "file_path" in field_names
             self.client.load_collection(name)
             return
+
+        self._has_file_path_field = True
 
         fields = [
             FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
@@ -31,6 +37,7 @@ class MilvusStore:
             FieldSchema(name="doc_title", dtype=DataType.VARCHAR, max_length=512),
             FieldSchema(name="chunk_index", dtype=DataType.INT32),
             FieldSchema(name="source_type", dtype=DataType.VARCHAR, max_length=32),
+            FieldSchema(name="file_path", dtype=DataType.VARCHAR, max_length=1024),
         ]
         schema = CollectionSchema(fields, description="RAG Knowledge Base")
 
@@ -57,7 +64,7 @@ class MilvusStore:
     def insert(self, chunks: list, dense_vectors: list[list[float]], sparse_vectors: list[dict]):
         data = []
         for i, c in enumerate(chunks):
-            data.append({
+            item = {
                 "text": c.text,
                 "parent_text": c.parent_text,
                 "parent_doc_id": c.parent_doc_id,
@@ -66,7 +73,10 @@ class MilvusStore:
                 "doc_title": c.doc_title,
                 "chunk_index": c.chunk_index,
                 "source_type": c.source_type,
-            })
+            }
+            if self._has_file_path_field:
+                item["file_path"] = c.file_path
+            data.append(item)
         self.client.insert(
             collection_name=self.settings.milvus_collection,
             data=data,
@@ -75,7 +85,7 @@ class MilvusStore:
     def hybrid_search(self, query_dense: list[float], query_sparse: dict,
                       dense_top_k: int, sparse_top_k: int,
                       rrf_k: int, fusion_top_k: int) -> list[dict]:
-        search_params_dense = {"metric_type": "IP", "params": {"nprobe": 8}}
+        search_params_dense = {"metric_type": "IP", "params": {"nprobe": self.settings.milvus_nprobe}}
         req_dense = AnnSearchRequest(
             data=[query_dense],
             anns_field="dense_vector",
@@ -110,11 +120,21 @@ class MilvusStore:
             })
         return hits
 
-    def delete_by_doc_title(self, doc_title: str):
+    def delete_by_doc_title(self, doc_title: str) -> str:
+        file_path = ""
+        if self._has_file_path_field:
+            results = self.client.query(
+                collection_name=self.settings.milvus_collection,
+                filter=f'doc_title == "{doc_title}"',
+                output_fields=["file_path"],
+                limit=1,
+            )
+            file_path = results[0]["file_path"] if results else ""
         self.client.delete(
             collection_name=self.settings.milvus_collection,
             filter=f'doc_title == "{doc_title}"',
         )
+        return file_path
 
     def list_documents(self) -> list[str]:
         results = self.client.query(

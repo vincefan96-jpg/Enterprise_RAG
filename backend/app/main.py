@@ -1,3 +1,6 @@
+from app.services.tokenizer_patch import apply as _apply_tokenizer_patch
+_apply_tokenizer_patch()
+
 import os
 import gc
 import atexit

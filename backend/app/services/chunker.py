@@ -12,6 +12,7 @@ class Chunk:
     doc_title: str
     chunk_index: int
     source_type: str = ""
+    file_path: str = ""
 
 
 class DocumentChunker:
