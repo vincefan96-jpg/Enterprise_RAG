@@ -1,5 +1,6 @@
 import os
 import uuid
+import traceback
 from pathlib import Path
 from fastapi import APIRouter, UploadFile, File, Request, HTTPException
 from app.models.schemas import DocumentUploadResponse, DocumentListResponse, DeleteResponse
@@ -44,15 +45,21 @@ async def upload_document(request: Request, file: UploadFile = File(...)):
     chunks = chunker.split(text, file.filename)
     for c in chunks:
         c.source_type = ext.lstrip(".")
+        c.file_path = save_path
 
-    embed_service = request.app.state.embedding_service
-    texts = [c.text for c in chunks]
-    embeddings = embed_service.encode_documents(texts)
-    dense_vecs = [e["dense"] for e in embeddings]
-    sparse_vecs = [e["sparse"] for e in embeddings]
+    try:
+        embed_service = request.app.state.embedding_service
+        texts = [c.text for c in chunks]
+        embeddings = embed_service.encode_documents(texts)
+        dense_vecs = [e["dense"] for e in embeddings]
+        sparse_vecs = [e["sparse"] for e in embeddings]
 
-    store = request.app.state.milvus_store
-    store.insert(chunks, dense_vecs, sparse_vecs)
+        store = request.app.state.milvus_store
+        store.insert(chunks, dense_vecs, sparse_vecs)
+    except Exception as e:
+        os.remove(save_path)
+        traceback.print_exc()
+        raise HTTPException(500, f"索引失败: {str(e)}")
 
     return DocumentUploadResponse(
         id=file_id,
@@ -72,5 +79,7 @@ async def list_documents(request: Request):
 @router.delete("/{doc_title:path}", response_model=DeleteResponse)
 async def delete_document(doc_title: str, request: Request):
     store = request.app.state.milvus_store
-    store.delete_by_doc_title(doc_title)
+    file_path = store.delete_by_doc_title(doc_title)
+    if file_path and os.path.isfile(file_path):
+        os.remove(file_path)
     return DeleteResponse(message=f"已删除文档: {doc_title}")
