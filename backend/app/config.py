@@ -13,7 +13,7 @@ class Settings(BaseSettings):
 
     reranker_model_path: str = "BAAI/bge-reranker-v2-m3"
     reranker_device: str = "cuda"
-    reranker_top_n: int = 5
+    reranker_top_n: int = 10
 
     deepseek_api_key: str = ""
     deepseek_base_url: str = "https://api.deepseek.com"
@@ -23,15 +23,15 @@ class Settings(BaseSettings):
     deepseek_timeout: int = 60
     deepseek_max_retries: int = 2
 
-    milvus_nprobe: int = 16
+    milvus_nprobe: int = 32
 
     hybrid_dense_top_k: int = 50
     hybrid_sparse_top_k: int = 50
     rrf_k: int = 60
-    hybrid_fusion_top_k: int = 20
+    hybrid_fusion_top_k: int = 30
 
-    parent_chunk_size: int = 800
-    child_chunk_size: int = 200
+    parent_chunk_size: int = 1000
+    child_chunk_size: int = 250
     chunk_overlap: int = 100
 
     upload_dir: str = "./uploads"
