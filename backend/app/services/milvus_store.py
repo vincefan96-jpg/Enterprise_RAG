@@ -4,17 +4,40 @@ from pymilvus import (
 )
 from app.config import Settings
 
+# Alias for the ORM connection used by list_documents pagination.
+_LIST_CONN_ALIAS = "list_documents"
+
+VARCHAR_LIMITS = {
+    "text": 4000,
+    "parent_text": 12000,
+    "parent_doc_id": 256,
+    "doc_title": 512,
+    "source_type": 32,
+    "file_path": 1024,
+}
+
+
+def filter_by_doc_title(doc_title: str) -> str:
+    escaped = doc_title.replace("\\", "\\\\").replace('"', '\\"')
+    return f'doc_title == "{escaped}"'
+
 
 class MilvusStore:
     def __init__(self, settings: Settings):
         self.settings = settings
         self.client = None
         self._has_file_path_field = False
+        self._initialized = False
+
+    @property
+    def is_ready(self) -> bool:
+        return self._initialized
 
     def connect(self):
-        self.client = MilvusClient(uri=self.settings.milvus_uri)
+        if self.client is None:
+            self.client = MilvusClient(uri=self.settings.milvus_uri)
 
-    async def init_collection(self):
+    def _init_collection_sync(self):
         self.connect()
         name = self.settings.milvus_collection
 
@@ -23,6 +46,7 @@ class MilvusStore:
             field_names = {f["name"] for f in desc["fields"]}
             self._has_file_path_field = "file_path" in field_names
             self.client.load_collection(name)
+            self._initialized = True
             return
 
         self._has_file_path_field = True
@@ -60,8 +84,35 @@ class MilvusStore:
             index_params=index_params,
         )
         self.client.load_collection(name)#创建集合后立即加载到内存，使其可进行查询
+        self._initialized = True
+
+    async def init_collection(self):
+        self._init_collection_sync()
+
+    def _ensure_ready(self):
+        """Lazily (re)initialize so a Milvus that was down at startup self-heals."""
+        if self._initialized:
+            return
+        try:
+            self._init_collection_sync()
+        except Exception:
+            self.client = None
+            raise
+
+    def validate_chunks(self, chunks: list) -> None:
+        for index, c in enumerate(chunks):
+            for field, limit in VARCHAR_LIMITS.items():
+                value = getattr(c, field, "") or ""
+                if len(value) > limit:
+                    raise ValueError(
+                        f"第 {index + 1} 个文本块的 {field} 长度为 {len(value)} 字符，"
+                        f"超过 Milvus 字段上限 {limit}；请调小 PARENT_CHUNK_SIZE / "
+                        f"CHILD_CHUNK_SIZE 或缩短文件名"
+                    )
 
     def insert(self, chunks: list, dense_vectors: list[list[float]], sparse_vectors: list[dict]):
+        self._ensure_ready()
+        self.validate_chunks(chunks)
         data = []
         for i, c in enumerate(chunks):
             item = {
@@ -81,10 +132,13 @@ class MilvusStore:
             collection_name=self.settings.milvus_collection,
             data=data,
         )
+        # Persist immediately so inserts survive a restart even without auto-flush.
+        self.client.flush(collection_name=self.settings.milvus_collection)
     #混合搜索，实现了 稠密 + 稀疏 双路召回 + RRF 融合
     def hybrid_search(self, query_dense: list[float], query_sparse: dict,
                       dense_top_k: int, sparse_top_k: int,
                       rrf_k: int, fusion_top_k: int) -> list[dict]:
+        self._ensure_ready()
         search_params_dense = {"metric_type": "IP", "params": {"nprobe": self.settings.milvus_nprobe}}
         req_dense = AnnSearchRequest(
             data=[query_dense],
@@ -120,34 +174,85 @@ class MilvusStore:
             })
         return hits
 
-    def delete_by_doc_title(self, doc_title: str) -> str:
+    def document_exists(self, doc_title: str) -> bool:
+        self._ensure_ready()
+        results = self.client.query(
+            collection_name=self.settings.milvus_collection,
+            filter=filter_by_doc_title(doc_title),
+            output_fields=["id"],
+            limit=1,
+        )
+        return bool(results)
+
+    def delete_by_doc_title(self, doc_title: str) -> tuple[str, int]:
+        """Delete every chunk of a document; returns (file_path, delete_count)."""
+        self._ensure_ready()
         file_path = ""
         if self._has_file_path_field:
             results = self.client.query(
                 collection_name=self.settings.milvus_collection,
-                filter=f'doc_title == "{doc_title}"',
+                filter=filter_by_doc_title(doc_title),
                 output_fields=["file_path"],
                 limit=1,
             )
             file_path = results[0]["file_path"] if results else ""
-        self.client.delete(
+        result = self.client.delete(
             collection_name=self.settings.milvus_collection,
-            filter=f'doc_title == "{doc_title}"',
+            filter=filter_by_doc_title(doc_title),
         )
-        return file_path
+        # Deletes are not durable until flushed; without this they are lost on
+        # restart and the documents reappear.
+        self.client.flush(collection_name=self.settings.milvus_collection)
+        deleted = result.get("delete_count", 0) if isinstance(result, dict) else 0
+        return file_path, deleted
 
     def list_documents(self) -> list[str]:
-        results = self.client.query(
-            collection_name=self.settings.milvus_collection,
-            filter="id >= 0",
-            output_fields=["doc_title"],
-            limit=10000,
-        )
-        seen = set()
-        for r in results:
-            seen.add(r.get("doc_title", ""))
+        """Distinct document titles in the collection.
+
+        Paginated via the ORM query iterator so collections larger than the
+        server-side query window (16384) are not silently truncated; falls
+        back to a single page if the iterator is unavailable.
+        """
+        self._ensure_ready()
+        seen: set[str] = set()
+
+        try:
+            from pymilvus import Collection, connections
+
+            connections.connect(alias=_LIST_CONN_ALIAS, uri=self.settings.milvus_uri)
+            try:
+                collection = Collection(
+                    self.settings.milvus_collection, using=_LIST_CONN_ALIAS
+                )
+                iterator = collection.query_iterator(
+                    batch_size=1000, expr="", output_fields=["doc_title"]
+                )
+                try:
+                    while True:
+                        rows = iterator.next()
+                        if not rows:
+                            break
+                        for r in rows:
+                            seen.add(r.get("doc_title", ""))
+                finally:
+                    iterator.close()
+            finally:
+                connections.disconnect(_LIST_CONN_ALIAS)
+        except Exception:
+            seen = {
+                r.get("doc_title", "")
+                for r in self.client.query(
+                    collection_name=self.settings.milvus_collection,
+                    filter="id >= 0",
+                    output_fields=["doc_title"],
+                    limit=10000,
+                )
+            }
+
         return sorted(seen)
 
     def close(self):
         if self.client:
             self.client.close()
+        self.client = None
+        self._initialized = False

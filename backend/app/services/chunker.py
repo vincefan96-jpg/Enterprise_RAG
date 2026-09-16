@@ -29,29 +29,32 @@ class DocumentChunker:
         )
 
     def split(self, text: str, doc_title: str) -> list[Chunk]:
-        parent_texts = self.parent_splitter.split_text(text)
-        child_texts = self.child_splitter.split_text(text)
+        """Split into parent chunks, then children *inside* each parent.
 
-        parent_ids = {}
-        chunks = []
-        for i, child in enumerate(child_texts):
-            # 关键公式：将子块索引映射到父块索引
-            parent_idx = min(i * len(parent_texts) // len(child_texts), len(parent_texts) - 1)
-            parent = parent_texts[parent_idx]
+        Children are produced per parent so every child is guaranteed to be
+        contained in the parent it points at (the previous proportional
+        index mapping paired children with unrelated parents).
+        """
+        chunks: list[Chunk] = []
+        child_index = 0
 
-            # 为每个唯一的父块生成ID
-            if parent not in parent_ids:
-                parent_ids[parent] = str(uuid.uuid4())
+        for parent_text in self.parent_splitter.split_text(text):
+            if not parent_text.strip():
+                continue
+            parent_id = str(uuid.uuid4())
+            for child_text in self.child_splitter.split_text(parent_text):
+                if not child_text.strip():
+                    continue
+                chunks.append(Chunk(
+                    id=str(uuid.uuid4()),
+                    text=child_text,
+                    parent_text=parent_text,
+                    parent_doc_id=parent_id,
+                    doc_title=doc_title,
+                    chunk_index=child_index,
+                ))
+                child_index += 1
 
-            # 创建 Chunk 对象
-            chunks.append(Chunk(
-                id=str(uuid.uuid4()),
-                text=child,
-                parent_text=parent,
-                parent_doc_id=parent_ids[parent],
-                doc_title=doc_title,
-                chunk_index=i,
-            ))
         return chunks
 #父子分块：
 # 用户提问

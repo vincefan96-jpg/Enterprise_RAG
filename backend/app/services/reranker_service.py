@@ -1,4 +1,6 @@
 import gc
+import threading
+
 from FlagEmbedding import FlagReranker
 from langchain_core.documents import Document
 from langchain_core.callbacks import Callbacks
@@ -19,6 +21,8 @@ class RerankerService(BaseDocumentCompressor):
             use_fp16=True,
             device=settings.reranker_device,
         ))
+        # Same fp16 buffer race as the embedder: serialize GPU calls.
+        object.__setattr__(self, "_lock", threading.Lock())
         self.top_n = settings.reranker_top_n
 
     def cleanup(self):
@@ -35,7 +39,8 @@ class RerankerService(BaseDocumentCompressor):
         #构造 query-document 对输出一个相关性分数
         pairs = [[query, doc.page_content] for doc in documents]
         #计算每个 document 对 query 的相关性分数
-        scores = self.model.compute_score(pairs)#返回的分数是 相关性得分 （值越大越相关）
+        with self._lock:
+            scores = self.model.compute_score(pairs)#返回的分数是 相关性得分 （值越大越相关）
         if not isinstance(scores, list):
             scores = [scores]
         scored = list(zip(documents, scores))

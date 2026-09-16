@@ -18,6 +18,13 @@ class DeleteResponse(BaseModel):
 
 class QueryRequest(BaseModel):
     question: str
+    history: list["ChatTurn"] | None = None
+    session_id: str | None = None
+
+
+class ChatTurn(BaseModel):
+    role: str
+    content: str
 
 
 class QueryResponse(BaseModel):

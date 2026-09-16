@@ -9,10 +9,12 @@ class DocumentParser:
         ext = Path(file_path).suffix.lower()
         if ext == ".pdf":
             return self._parse_pdf(file_path)
-        elif ext in (".docx", ".doc"):
+        elif ext == ".docx":
             return self._parse_docx(file_path)
-        elif ext == ".txt":
+        elif ext in (".txt", ".md"):
             return self._parse_txt(file_path)
+        elif ext == ".doc":
+            raise ValueError("旧版 .doc 不受支持，请另存为 .docx")
         else:
             raise ValueError(f"Unsupported file type: {ext}")
 

@@ -1,9 +1,21 @@
+from pathlib import Path
+
+from pydantic import AliasChoices, Field, field_validator
 from pydantic_settings import BaseSettings
 from functools import lru_cache
 
+# Resolve repo-root paths explicitly so the app reads/writes the same
+# locations regardless of the process working directory.
+ROOT = Path(__file__).resolve().parents[2]
+ENV_FILE = ROOT / ".env"
+
 
 class Settings(BaseSettings):
-    model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
+    model_config = {
+        "env_file": str(ENV_FILE),
+        "env_file_encoding": "utf-8",
+        "extra": "ignore",
+    }
 
     milvus_uri: str = "http://localhost:19530"
     milvus_collection: str = "knowledge_base"
@@ -34,8 +46,35 @@ class Settings(BaseSettings):
     child_chunk_size: int = 250
     chunk_overlap: int = 100
 
-    upload_dir: str = "./uploads"
+    upload_dir: str = "backend/uploads"
     max_upload_size_mb: int = 50
+    skip_models: bool = False
+
+    agent_history_turns: int = 6
+    agent_max_iterations: int = 2
+    agent_max_tool_calls: int = 3
+    agent_retry_fusion_top_k: int = 50
+    context_max_docs: int = 5
+
+    # Conversation memory: "sqlite" persists across restarts, "memory" does not.
+    checkpointer_backend: str = Field(
+        default="sqlite",
+        validation_alias=AliasChoices(
+            "AGENT_CHECKPOINTER_BACKEND", "CHECKPOINTER_BACKEND"
+        ),
+    )
+    checkpointer_path: str = Field(
+        default="backend/data/checkpoints.sqlite",
+        validation_alias=AliasChoices(
+            "AGENT_CHECKPOINTER_PATH", "CHECKPOINTER_PATH"
+        ),
+    )
+
+    @field_validator("upload_dir")
+    @classmethod
+    def _resolve_upload_dir(cls, value: str) -> str:
+        path = Path(value)
+        return str(path if path.is_absolute() else ROOT / path)
 
 
 @lru_cache

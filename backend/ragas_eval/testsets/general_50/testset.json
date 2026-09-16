@@ -1,0 +1,748 @@
+{
+  "version": 1,
+  "name": "通用企业知识库 50 条 (v1.0)",
+  "queries": [
+    {
+      "question": "云枢云平台 v3.2 是在哪一天正式发布的？",
+      "relevant_doc_titles": [
+        "D1_云枢云平台产品手册_v3.2.txt"
+      ],
+      "ground_truth_answer": "2026 年 3 月 18 日。",
+      "id": "Q001",
+      "qtype": "单跳事实抽取",
+      "difficulty": "易",
+      "evidence": "「v3.2 版本于 2026 年 3 月 18 日正式发布」",
+      "keywords": "2026 年 3 月 18 日",
+      "rubric": "日期须精确到日；答成 2026 年或仅答月份均判不通过。",
+      "expect_refusal": false,
+      "source": "D1《云枢云平台产品手册 v3.2》§1 产品概述"
+    },
+    {
+      "question": "云枢云平台由哪五个核心模块构成？",
+      "relevant_doc_titles": [
+        "D1_云枢云平台产品手册_v3.2.txt"
+      ],
+      "ground_truth_answer": "数据集成（NimbusFlow）、低代码应用（NimbusApp）、智能分析（NimbusInsight）、统一身份（NimbusID）、运维中枢（NimbusOps）。",
+      "id": "Q002",
+      "qtype": "单跳事实抽取",
+      "difficulty": "易",
+      "evidence": "「平台由五个核心模块构成：数据集成（NimbusFlow）、低代码应用（NimbusApp）、智能分析（NimbusInsight）、统一身份（NimbusID）、运维中枢（NimbusOps）。」",
+      "keywords": "NimbusFlow、NimbusApp、NimbusInsight、NimbusID、NimbusOps",
+      "rubric": "五个模块须齐全，缺一即不完整。",
+      "expect_refusal": false,
+      "source": "D1《云枢云平台产品手册 v3.2》§1 产品概述"
+    },
+    {
+      "question": "v3.1 的安全维护窗口截止到什么时间？截止后还有安全补丁吗？",
+      "relevant_doc_titles": [
+        "D1_云枢云平台产品手册_v3.2.txt"
+      ],
+      "ground_truth_answer": "截止至 2027 年 6 月 30 日，此后不再提供安全补丁。",
+      "id": "Q003",
+      "qtype": "单跳事实抽取",
+      "difficulty": "易",
+      "evidence": "「v3.1 的安全维护窗口截止至 2027 年 6 月 30 日，此后不再提供安全补丁。」",
+      "keywords": "2027 年 6 月 30 日",
+      "rubric": "需同时答出截止时间与「不再提供补丁」两个要素。",
+      "expect_refusal": false,
+      "source": "D1《云枢云平台产品手册 v3.2》§2 版本与兼容性"
+    },
+    {
+      "question": "企业版的 NimbusInsight 能创建多少个数据集？",
+      "relevant_doc_titles": [
+        "D1_云枢云平台产品手册_v3.2.txt"
+      ],
+      "ground_truth_answer": "不限。",
+      "id": "Q004",
+      "qtype": "单跳事实抽取",
+      "difficulty": "易",
+      "evidence": "「智能分析 NimbusInsight | 数据集数 | 5 | 200 | 不限」",
+      "keywords": "不限",
+      "rubric": "答案来自表格第 5 行第 5 列；注意区分数据集数与看板数。",
+      "expect_refusal": false,
+      "source": "D1《云枢云平台产品手册 v3.2》§3 模块规格上限"
+    },
+    {
+      "question": "数据集成模块提供多少类数据源连接器？其中包含多少类国产数据库连接器？",
+      "relevant_doc_titles": [
+        "D1_云枢云平台产品手册_v3.2.txt"
+      ],
+      "ground_truth_answer": "共 47 类数据源连接器，其中国产数据库类连接器 11 类。",
+      "id": "Q005",
+      "qtype": "单跳事实抽取",
+      "difficulty": "易",
+      "evidence": "「数据集成模块提供 47 类数据源连接器，其中国产数据库类连接器 11 类。」",
+      "keywords": "47 类、11 类",
+      "rubric": "两个数字都要给出。",
+      "expect_refusal": false,
+      "source": "D1《云枢云平台产品手册 v3.2》§4 关键功能说明"
+    },
+    {
+      "question": "统一身份模块支持哪三种身份认证协议？企业版还额外支持什么？",
+      "relevant_doc_titles": [
+        "D1_云枢云平台产品手册_v3.2.txt"
+      ],
+      "ground_truth_answer": "支持 SAML 2.0、OIDC 与 LDAP 三种协议；企业版额外支持 SCIM 2.0 用户自动同步。",
+      "id": "Q006",
+      "qtype": "单跳事实抽取",
+      "difficulty": "易",
+      "evidence": "「统一身份模块支持 SAML 2.0、OIDC 与 LDAP 三种协议；企业版额外支持 SCIM 2.0 用户自动同步。」",
+      "keywords": "SAML 2.0、OIDC、LDAP、SCIM 2.0",
+      "rubric": "协议名须准确，SCIM 属企业版增量能力。",
+      "expect_refusal": false,
+      "source": "D1《云枢云平台产品手册 v3.2》§4 关键功能说明"
+    },
+    {
+      "question": "云枢云平台 Web 端支持的浏览器最低版本要求是什么？是否支持 IE？",
+      "relevant_doc_titles": [
+        "D1_云枢云平台产品手册_v3.2.txt"
+      ],
+      "ground_truth_answer": "Chrome 110 及以上、Edge 110 及以上、Safari 16 及以上；不支持 IE 浏览器。",
+      "id": "Q007",
+      "qtype": "单跳事实抽取",
+      "difficulty": "易",
+      "evidence": "「Web 端支持 Chrome 110 及以上、Edge 110 及以上、Safari 16 及以上，不支持 IE 浏览器。」",
+      "keywords": "Chrome 110、Edge 110、Safari 16、不支持 IE",
+      "rubric": "三个浏览器版本号均需正确。",
+      "expect_refusal": false,
+      "source": "D1《云枢云平台产品手册 v3.2》§5 客户端要求"
+    },
+    {
+      "question": "桌面客户端提供哪些操作系统的版本？最低系统版本要求是什么？",
+      "relevant_doc_titles": [
+        "D1_云枢云平台产品手册_v3.2.txt"
+      ],
+      "ground_truth_answer": "仅提供 Windows 版，要求 Windows 10 21H2 及以上。",
+      "id": "Q008",
+      "qtype": "单跳事实抽取",
+      "difficulty": "中",
+      "evidence": "「桌面客户端仅提供 Windows 版，要求 Windows 10 21H2 及以上。」",
+      "keywords": "仅 Windows、Windows 10 21H2",
+      "rubric": "若答出 macOS / Linux 版本即为幻觉。",
+      "expect_refusal": false,
+      "source": "D1《云枢云平台产品手册 v3.2》§5 客户端要求"
+    },
+    {
+      "question": "企业版的年费是多少？报价中已包含多少名用户？",
+      "relevant_doc_titles": [
+        "D2_云枢科技产品定价与销售政策（2026_版）.txt"
+      ],
+      "ground_truth_answer": "120,000 元/年，含 500 名用户。",
+      "id": "Q009",
+      "qtype": "单跳事实抽取",
+      "difficulty": "易",
+      "evidence": "「企业版 120,000 元/年，含 500 名用户」",
+      "keywords": "120,000 元、500 名用户",
+      "rubric": "价格与含用户数两个要素都要有。",
+      "expect_refusal": false,
+      "source": "D2《云枢科技产品定价与销售政策（2026 版）》§1 标准定价"
+    },
+    {
+      "question": "私有化部署的年度维保费按什么标准收取？",
+      "relevant_doc_titles": [
+        "D2_云枢科技产品定价与销售政策（2026_版）.txt"
+      ],
+      "ground_truth_answer": "按授权费的 15%/年收取。",
+      "id": "Q010",
+      "qtype": "单跳事实抽取",
+      "difficulty": "易",
+      "evidence": "「维保费为授权费的 15%/年」",
+      "keywords": "15%",
+      "rubric": "须体现基数（授权费）与费率（15%/年）。",
+      "expect_refusal": false,
+      "source": "D2《云枢科技产品定价与销售政策（2026 版）》§1 标准定价"
+    },
+    {
+      "question": "政府及公立教育机构在常规折扣之外还能享受什么优惠？",
+      "relevant_doc_titles": [
+        "D2_云枢科技产品定价与销售政策（2026_版）.txt"
+      ],
+      "ground_truth_answer": "在上述基础上再享 9 折。",
+      "id": "Q011",
+      "qtype": "单跳事实抽取",
+      "difficulty": "易",
+      "evidence": "「政府及公立教育机构在上述基础上再享 9 折。」",
+      "keywords": "9 折",
+      "rubric": "注意区分「9 折」与「85 折」「7 折」。",
+      "expect_refusal": false,
+      "source": "D2《云枢科技产品定价与销售政策（2026 版）》§2 折扣政策"
+    },
+    {
+      "question": "标准版和企业版客户的最长账期分别是多少天？",
+      "relevant_doc_titles": [
+        "D2_云枢科技产品定价与销售政策（2026_版）.txt"
+      ],
+      "ground_truth_answer": "标准版最长 30 天，企业版最长 60 天。",
+      "id": "Q012",
+      "qtype": "单跳事实抽取",
+      "difficulty": "易",
+      "evidence": "「标准版最长账期 30 天，企业版最长账期 60 天。」",
+      "keywords": "30 天、60 天",
+      "rubric": "两个数字不得对调。",
+      "expect_refusal": false,
+      "source": "D2《云枢科技产品定价与销售政策（2026 版）》§3 计费与账期"
+    },
+    {
+      "question": "P1 故障的响应时限和恢复目标分别是多少？",
+      "relevant_doc_titles": [
+        "D3_云枢科技售后技术支持与_SLA_服务协议.txt"
+      ],
+      "ground_truth_answer": "响应时限 15 分钟，恢复目标 4 小时。",
+      "id": "Q013",
+      "qtype": "单跳事实抽取",
+      "difficulty": "易",
+      "evidence": "「P1 | 业务全面中断 | 15 分钟 | 4 小时」",
+      "keywords": "15 分钟、4 小时",
+      "rubric": "不要与 P2（30 分钟 / 8 小时）混淆。",
+      "expect_refusal": false,
+      "source": "D3《云枢科技售后技术支持与 SLA 服务协议》§2 故障分级与响应时效"
+    },
+    {
+      "question": "计划内维护需要提前几个工作日通知客户？维护窗口是否计入不可用时长？",
+      "relevant_doc_titles": [
+        "D3_云枢科技售后技术支持与_SLA_服务协议.txt"
+      ],
+      "ground_truth_answer": "需提前 5 个工作日通知客户；计划内维护窗口不计入不可用时长。",
+      "id": "Q014",
+      "qtype": "单跳事实抽取",
+      "difficulty": "易",
+      "evidence": "「需提前 5 个工作日通知客户。计划内维护窗口不计入不可用时长。」",
+      "keywords": "5 个工作日、不计入不可用时长",
+      "rubric": "两个问点均须回答。",
+      "expect_refusal": false,
+      "source": "D3《云枢科技售后技术支持与 SLA 服务协议》§4 计划内维护"
+    },
+    {
+      "question": "访问 L3 敏感数据需要谁审批？有什么额外要求？",
+      "relevant_doc_titles": [
+        "D4_云枢科技信息安全与数据合规制度.txt"
+      ],
+      "ground_truth_answer": "需部门负责人审批，且访问留痕。",
+      "id": "Q015",
+      "qtype": "单跳事实抽取",
+      "difficulty": "易",
+      "evidence": "「L3 敏感数据需部门负责人审批，访问留痕」",
+      "keywords": "部门负责人、访问留痕",
+      "rubric": "审批人不得答成 CISO（那是 L4）。",
+      "expect_refusal": false,
+      "source": "D4《云枢科技信息安全与数据合规制度》§1 数据分级"
+    },
+    {
+      "question": "生产环境访问的录屏记录需要保存多久？",
+      "relevant_doc_titles": [
+        "D4_云枢科技信息安全与数据合规制度.txt"
+      ],
+      "ground_truth_answer": "保存 180 天。",
+      "id": "Q016",
+      "qtype": "单跳事实抽取",
+      "difficulty": "易",
+      "evidence": "「生产环境访问实行双人授权与全程录屏，录屏保存 180 天。」",
+      "keywords": "180 天",
+      "rubric": "易与运维中枢标准版日志留存的 180 天混淆，注意问的是录屏。",
+      "expect_refusal": false,
+      "source": "D4《云枢科技信息安全与数据合规制度》§4 访问与审计"
+    },
+    {
+      "question": "国内出差和境外出差分别需要提前多少个工作日申请？",
+      "relevant_doc_titles": [
+        "D5_云枢科技差旅与费用报销管理制度.txt"
+      ],
+      "ground_truth_answer": "国内出差提前 2 个工作日，境外出差提前 10 个工作日。",
+      "id": "Q017",
+      "qtype": "单跳事实抽取",
+      "difficulty": "易",
+      "evidence": "「国内出差需提前 2 个工作日申请，境外出差需提前 10 个工作日申请。」",
+      "keywords": "2 个工作日、10 个工作日",
+      "rubric": "两个数值不得对调。",
+      "expect_refusal": false,
+      "source": "D5《云枢科技差旅与费用报销管理制度》§1 出差审批"
+    },
+    {
+      "question": "生产数据库全量备份每天什么时候执行？保留多久？",
+      "relevant_doc_titles": [
+        "D6_云枢云平台运维操作规范.txt"
+      ],
+      "ground_truth_answer": "每日 02:00 执行，保留 30 天。",
+      "id": "Q018",
+      "qtype": "单跳事实抽取",
+      "difficulty": "易",
+      "evidence": "「生产数据库全量备份每日 02:00 执行，保留 30 天」",
+      "keywords": "02:00、30 天",
+      "rubric": "勿与增量备份（每 6 小时 / 保留 7 天）混淆。",
+      "expect_refusal": false,
+      "source": "D6《云枢云平台运维操作规范》§2 备份与恢复"
+    },
+    {
+      "question": "某企业版客户某月可用性为 98.8%，按 SLA 可以获得什么补偿？能否要求现金赔付？",
+      "relevant_doc_titles": [
+        "D3_云枢科技售后技术支持与_SLA_服务协议.txt"
+      ],
+      "ground_truth_answer": "98.8% 属于「99.0% 及以下」区间，可获服务期顺延 10 天；顺延是该条款的唯一救济方式，不涉及现金赔付，因此不能要求现金赔付。",
+      "id": "Q019",
+      "qtype": "多跳与跨文档推理",
+      "difficulty": "难",
+      "evidence": "「可用性按自然月统计。低于承诺值时，客户可获服务期顺延：99.9% 以下但高于 99.0% 顺延 3 天，99.0% 及以下顺延 10 天。顺延为该条款的唯一救济方式，不涉及现金赔付。」",
+      "keywords": "顺延 10 天、唯一救济方式、不涉及现金赔付",
+      "rubric": "需先做区间判断（98.8% < 99.0%），再答补偿方式与赔付口径。只答顺延 10 天而漏掉赔付口径属不完整。",
+      "expect_refusal": false,
+      "source": "D3《云枢科技售后技术支持与 SLA 服务协议》§3 可用性承诺"
+    },
+    {
+      "question": "一份被标记为 L3 的文档中要展示客户手机号，应按什么规则脱敏？依据的是哪一级数据的要求？",
+      "relevant_doc_titles": [
+        "D4_云枢科技信息安全与数据合规制度.txt"
+      ],
+      "ground_truth_answer": "手机号应保留前 3 位与后 4 位；依据 L3 敏感数据（即 L3 及以上）的脱敏与存储加密要求。",
+      "id": "Q020",
+      "qtype": "多跳与跨文档推理",
+      "difficulty": "中",
+      "evidence": "",
+      "keywords": "前 3 位与后 4 位、L3",
+      "rubric": "需跨 §2 脱敏规则与 §1 数据分级两节；只答脱敏规则不给分级依据算部分正确。",
+      "expect_refusal": false,
+      "source": "D4《云枢科技信息安全与数据合规制度》§1 数据分级 + §2 加密与脱敏"
+    },
+    {
+      "question": "「日志留存 3 年」和「业务数据默认留存 3 年」分别出自哪里，含义是否相同？",
+      "relevant_doc_titles": [
+        "D1_云枢云平台产品手册_v3.2.txt"
+      ],
+      "ground_truth_answer": "不相同。前者是运维中枢 NimbusOps 在企业版下的产品能力上限（属产品规格）；后者是《信息安全与数据合规制度》规定的公司数据留存要求（属内部合规制度）。二者来源与性质均不同。",
+      "id": "Q021",
+      "qtype": "多跳与跨文档推理",
+      "difficulty": "难",
+      "evidence": "",
+      "keywords": "产品规格、合规制度、不相同",
+      "rubric": "跨两份文档的同一数字辨析题，重点考察是否区分「产品能力」与「内部制度」。答「相同」即判错。",
+      "expect_refusal": false,
+      "source": "D1《云枢云平台产品手册 v3.2》§3 模块规格上限 + D4 §5"
+    },
+    {
+      "question": "运维中如何判断需要扩容？扩容操作必须在什么时间执行？",
+      "relevant_doc_titles": [
+        "D6_云枢云平台运维操作规范.txt"
+      ],
+      "ground_truth_answer": "资源使用率连续 3 天超过 75% 触发扩容评估；扩容操作需在变更窗口内执行，紧急扩容除外。",
+      "id": "Q022",
+      "qtype": "多跳与跨文档推理",
+      "difficulty": "中",
+      "evidence": "",
+      "keywords": "连续 3 天、75%、变更窗口、紧急扩容除外",
+      "rubric": "需同时答出触发阈值与执行时窗，漏掉「紧急扩容除外」为不完整。",
+      "expect_refusal": false,
+      "source": "D6《云枢云平台运维操作规范》§3 扩容与容量 + §1 变更与发布"
+    },
+    {
+      "question": "P1 故障发生后，除了技术恢复之外还需要履行哪些动作，各自的时限要求是什么？",
+      "relevant_doc_titles": [
+        "D6_云枢云平台运维操作规范.txt"
+      ],
+      "ground_truth_answer": "须在 10 分钟内建立作战室（War Room）并拉入值班经理与研发负责人；故障恢复后 5 个工作日内完成复盘；P1 故障的复盘须全员通报；复盘文档须包含时间线、根因、影响范围、改进项与责任人。",
+      "id": "Q023",
+      "qtype": "多跳与跨文档推理",
+      "difficulty": "难",
+      "evidence": "「P1、P2 故障须在 10 分钟内建立作战室（War Room），并拉入值班经理与研发负责人。故障复盘须在故障恢复后 5 个工作日内完成，P1 故障的复盘须全员通报。」",
+      "keywords": "10 分钟、作战室、5 个工作日、全员通报",
+      "rubric": "多要素召回题：作战室时限、复盘时限、通报范围、复盘文档要素。",
+      "expect_refusal": false,
+      "source": "D6《云枢云平台运维操作规范》§4 故障分级与复盘"
+    },
+    {
+      "question": "某公立高校采购三年期企业版，折扣叠加后最终能低于 7 折吗？",
+      "relevant_doc_titles": [
+        "D2_云枢科技产品定价与销售政策（2026_版）.txt"
+      ],
+      "ground_truth_answer": "不能。三年期合同 85 折与政府及公立教育机构 9 折可以叠加，但最终折扣不得低于 7 折。",
+      "id": "Q024",
+      "qtype": "多跳与跨文档推理",
+      "difficulty": "中",
+      "evidence": "「两年期合同 9 折，三年期合同 85 折。政府及公立教育机构在上述基础上再享 9 折。折扣可叠加，但最终折扣不得低于 7 折。」",
+      "keywords": "85 折、9 折、不得低于 7 折",
+      "rubric": "需识别两条折扣规则可叠加，并命中 7 折下限。",
+      "expect_refusal": false,
+      "source": "D2《云枢科技产品定价与销售政策（2026 版）》§2 折扣政策"
+    },
+    {
+      "question": "客户目前使用 v2.x，要升级到 v3.2 需要走什么路径？升级期间业务会中断多久？",
+      "relevant_doc_titles": [
+        "D1_云枢云平台产品手册_v3.2.txt"
+      ],
+      "ground_truth_answer": "需先迁移至 v3.0 中转版本，再升级到 v3.2；升级窗口内业务中断时间不超过 15 分钟。",
+      "id": "Q025",
+      "qtype": "多跳与跨文档推理",
+      "difficulty": "中",
+      "evidence": "「v3.2 支持从 v3.0 直接原地升级；从 v2.x 升级需先迁移至 v3.0 中转版本。升级窗口内业务中断时间不超过 15 分钟。」",
+      "keywords": "v3.0 中转版本、15 分钟",
+      "rubric": "升级路径与中断时长两个问点均须回答。",
+      "expect_refusal": false,
+      "source": "D1《云枢云平台产品手册 v3.2》§2 版本与兼容性"
+    },
+    {
+      "question": "员工乘飞机出差，满足什么条件才能乘坐公务舱？",
+      "relevant_doc_titles": [
+        "D5_云枢科技差旅与费用报销管理制度.txt"
+      ],
+      "ground_truth_answer": "需同时满足两个条件：飞行时长 3 小时以上，且职级为总监及以上。",
+      "id": "Q026",
+      "qtype": "多跳与跨文档推理",
+      "difficulty": "中",
+      "evidence": "「飞机：飞行时长 3 小时以内乘经济舱，3 小时以上且职级为总监及以上可乘公务舱。」",
+      "keywords": "3 小时以上、总监及以上",
+      "rubric": "这是「且」的条件，只答其一即为错误。",
+      "expect_refusal": false,
+      "source": "D5《云枢科技差旅与费用报销管理制度》§2 交通标准"
+    },
+    {
+      "question": "员工在一线城市连续出差住宿 20 晚，从第几晚起住宿标准发生变化？如何变化？",
+      "relevant_doc_titles": [
+        "D5_云枢科技差旅与费用报销管理制度.txt"
+      ],
+      "ground_truth_answer": "从第 16 晚起，按标准的 80% 执行（即 500 元 × 80% = 400 元/晚）。",
+      "id": "Q027",
+      "qtype": "多跳与跨文档推理",
+      "difficulty": "中",
+      "evidence": "",
+      "keywords": "第 16 天、80%",
+      "rubric": "考察「超过 15 天」的临界点理解：第 16 天起，而非第 15 天。",
+      "expect_refusal": false,
+      "source": "D5《云枢科技差旅与费用报销管理制度》§3 住宿标准"
+    },
+    {
+      "question": "客户对技术支持的处理结果不满意，可以通过什么方式解决？时限是多久？",
+      "relevant_doc_titles": [
+        "D3_云枢科技售后技术支持与_SLA_服务协议.txt"
+      ],
+      "ground_truth_answer": "可在 5 个工作日内提出申诉，由服务质量委员会在 10 个工作日内出具结论。",
+      "id": "Q028",
+      "qtype": "多跳与跨文档推理",
+      "difficulty": "中",
+      "evidence": "「客户对处理结果不满意，可在 5 个工作日内提出申诉，由服务质量委员会在 10 个工作日内出具结论。」",
+      "keywords": "5 个工作日、服务质量委员会、10 个工作日",
+      "rubric": "申诉时限与出具结论时限是不同主体、不同数值，不可混用。",
+      "expect_refusal": false,
+      "source": "D3《云枢科技售后技术支持与 SLA 服务协议》§5 服务升级与申诉"
+    },
+    {
+      "question": "某客户购买标准版并需要 100 名用户，按标准价计算一年需支付多少元？",
+      "relevant_doc_titles": [
+        "D2_云枢科技产品定价与销售政策（2026_版）.txt"
+      ],
+      "ground_truth_answer": "31,000 元。计算过程：18,000 +（100 − 50）× 260 = 18,000 + 13,000 = 31,000 元。",
+      "id": "Q029",
+      "qtype": "数值与计算",
+      "difficulty": "中",
+      "evidence": "「标准版 18,000 元/年，含 50 名用户，超出部分 260 元/用户/年。」",
+      "keywords": "31,000 元",
+      "rubric": "需正确识别免费额度 50 名，仅对超出的 50 名计费。答 26,000（漏加基价）或 44,000（按 100 名全额计费）均判错。",
+      "expect_refusal": false,
+      "source": "D2《云枢科技产品定价与销售政策（2026 版）》§1 标准定价"
+    },
+    {
+      "question": "某客户签署三年期企业版合同，按目录价计算每年应付多少元？",
+      "relevant_doc_titles": [
+        "D2_云枢科技产品定价与销售政策（2026_版）.txt"
+      ],
+      "ground_truth_answer": "102,000 元。计算过程：120,000 × 85% = 102,000 元。",
+      "id": "Q030",
+      "qtype": "数值与计算",
+      "difficulty": "中",
+      "evidence": "「三年期合同 85 折」",
+      "keywords": "102,000 元",
+      "rubric": "须使用三年期 85 折，答 108,000（用 9 折）即判错。",
+      "expect_refusal": false,
+      "source": "D2《云枢科技产品定价与销售政策（2026 版）》§2 折扣政策"
+    },
+    {
+      "question": "标准版若改为月付，每月价格是多少？12 个月合计相当于年费的多少倍？",
+      "relevant_doc_titles": [
+        "D2_云枢科技产品定价与销售政策（2026_版）.txt"
+      ],
+      "ground_truth_answer": "每月 2,000 元（18,000 ÷ 9 = 2,000）；12 个月合计 24,000 元，相当于年费的 1.33 倍。",
+      "id": "Q031",
+      "qtype": "数值与计算",
+      "difficulty": "中",
+      "evidence": "「月付价格按年费的 1/9 计算，即 12 个月实付相当于年费的 1.33 倍。」",
+      "keywords": "2,000 元、1.33 倍",
+      "rubric": "两个问点都要算；仅答 1.33 倍而算不出月单价只能算部分正确。",
+      "expect_refusal": false,
+      "source": "D2《云枢科技产品定价与销售政策（2026 版）》§3 计费与账期"
+    },
+    {
+      "question": "某客户采购私有化部署（授权费按起步价计），首年总支出包含哪些费用，合计多少元？",
+      "relevant_doc_titles": [
+        "D2_云枢科技产品定价与销售政策（2026_版）.txt"
+      ],
+      "ground_truth_answer": "包含一次性授权费 800,000 元与首年维保费 120,000 元（800,000 × 15%），首年合计 920,000 元。",
+      "id": "Q032",
+      "qtype": "数值与计算",
+      "difficulty": "中",
+      "evidence": "「私有化部署一次性授权费 800,000 元起，另收年度维保费用，维保费为授权费的 15%/年。」",
+      "keywords": "800,000 元、120,000 元、920,000 元",
+      "rubric": "易漏项题：只答 800,000 元属漏算维保费。",
+      "expect_refusal": false,
+      "source": "D2《云枢科技产品定价与销售政策（2026 版）》§1 标准定价"
+    },
+    {
+      "question": "某员工在一线城市出差住宿 18 晚，按制度住宿费报销上限合计多少元？",
+      "relevant_doc_titles": [
+        "D5_云枢科技差旅与费用报销管理制度.txt"
+      ],
+      "ground_truth_answer": "8,700 元。计算过程：前 15 晚按 500 元/晚计 7,500 元；第 16–18 晚按 500 × 80% = 400 元/晚计 1,200 元；合计 8,700 元。",
+      "id": "Q033",
+      "qtype": "数值与计算",
+      "difficulty": "难",
+      "evidence": "",
+      "keywords": "8,700 元",
+      "rubric": "分段计算题：前 15 晚全额、后 3 晚 80%。答 9,000 元（未分段）即判错。",
+      "expect_refusal": false,
+      "source": "D5《云枢科技差旅与费用报销管理制度》§3 住宿标准"
+    },
+    {
+      "question": "某员工在其他城市出差 5 天（每日在途时间均超过 4 小时），出差补贴合计多少元？",
+      "relevant_doc_titles": [
+        "D5_云枢科技差旅与费用报销管理制度.txt"
+      ],
+      "ground_truth_answer": "400 元。计算过程：80 元/天 × 5 天 = 400 元。",
+      "id": "Q034",
+      "qtype": "数值与计算",
+      "difficulty": "易",
+      "evidence": "「出差补贴：一线城市 120 元/天，其他城市 80 元/天，按实际出差天数计算；出差当日不足 4 小时不计补贴。」",
+      "keywords": "400 元",
+      "rubric": "须用其他城市标准 80 元/天。答 600 元（误用一线城市标准）判错。",
+      "expect_refusal": false,
+      "source": "D5《云枢科技差旅与费用报销管理制度》§4 出差补贴"
+    },
+    {
+      "question": "某企业版客户某月可用性为 99.3%，可获得多少天服务期顺延？",
+      "relevant_doc_titles": [
+        "D3_云枢科技售后技术支持与_SLA_服务协议.txt"
+      ],
+      "ground_truth_answer": "3 天。99.3% 低于企业版承诺的 99.9%，但高于 99.0%，落在顺延 3 天的区间。",
+      "id": "Q035",
+      "qtype": "数值与计算",
+      "difficulty": "中",
+      "evidence": "「99.9% 以下但高于 99.0% 顺延 3 天」",
+      "keywords": "3 天",
+      "rubric": "区间判断题。答 10 天（误判为 99.0% 及以下）判错。",
+      "expect_refusal": false,
+      "source": "D3《云枢科技售后技术支持与 SLA 服务协议》§3 可用性承诺"
+    },
+    {
+      "question": "某客户签约后第 60 天发现官方目录价下调，是否可以申请价格保护？若获得差价抵扣券，有效期多久？",
+      "relevant_doc_titles": [
+        "D2_云枢科技产品定价与销售政策（2026_版）.txt"
+      ],
+      "ground_truth_answer": "可以，价格保护窗口为签约后 90 天内，第 60 天在窗口内；差价抵扣券有效期为 12 个月。",
+      "id": "Q036",
+      "qtype": "数值与计算",
+      "difficulty": "中",
+      "evidence": "「客户在签约后 90 天内，若官方目录价下调，可申请按新价格重新签署或获得差价抵扣券，差价抵扣券有效期 12 个月。」",
+      "keywords": "可以、12 个月",
+      "rubric": "需先做时限判断（60 < 90）再答券有效期。易与「续费提前 15 个自然日」混淆。",
+      "expect_refusal": false,
+      "source": "D2《云枢科技产品定价与销售政策（2026 版）》§5 价格保护"
+    },
+    {
+      "question": "客户需要使用 5 层下钻的归因分析能力，最低需要购买哪个版本？",
+      "relevant_doc_titles": [
+        "D1_云枢云平台产品手册_v3.2.txt"
+      ],
+      "ground_truth_answer": "企业版（该能力需企业版授权）。",
+      "id": "Q037",
+      "qtype": "条件约束与流程判断",
+      "difficulty": "易",
+      "evidence": "「智能分析模块内置归因分析能力，支持最多 5 层下钻，需企业版授权。」",
+      "keywords": "企业版",
+      "rubric": "答标准版即判错。",
+      "expect_refusal": false,
+      "source": "D1《云枢云平台产品手册 v3.2》§4 关键功能说明"
+    },
+    {
+      "question": "单笔订单金额 600,000 元，审批流程上有什么额外要求？",
+      "relevant_doc_titles": [
+        "D2_云枢科技产品定价与销售政策（2026_版）.txt"
+      ],
+      "ground_truth_answer": "单笔订单超过 500,000 元，需报销售副总裁审批。",
+      "id": "Q038",
+      "qtype": "条件约束与流程判断",
+      "difficulty": "易",
+      "evidence": "「单笔订单金额超过 500,000 元，需报销售副总裁审批。」",
+      "keywords": "销售副总裁",
+      "rubric": "注意区分报销审批链（部门负责人 / 财务经理 / CFO）与订单审批链。",
+      "expect_refusal": false,
+      "source": "D2《云枢科技产品定价与销售政策（2026 版）》§2 折扣政策"
+    },
+    {
+      "question": "客户未能在服务期到期前 15 个自然日内完成续费，会产生什么后果？",
+      "relevant_doc_titles": [
+        "D2_云枢科技产品定价与销售政策（2026_版）.txt"
+      ],
+      "ground_truth_answer": "系统将在到期后第 3 个工作日自动将该账号降级至免费版。",
+      "id": "Q039",
+      "qtype": "条件约束与流程判断",
+      "difficulty": "中",
+      "evidence": "「续费需在当前服务期到期前 15 个自然日内完成支付；逾期后，系统将在到期后第 3 个工作日自动将该账号降级至免费版。」",
+      "keywords": "第 3 个工作日、降级至免费版",
+      "rubric": "后果须具体到「第 3 个工作日」与「降级至免费版」。",
+      "expect_refusal": false,
+      "source": "D2《云枢科技产品定价与销售政策（2026 版）》§4 续费与退款"
+    },
+    {
+      "question": "员工未审批就先行出差，费用能否报销？",
+      "relevant_doc_titles": [
+        "D5_云枢科技差旅与费用报销管理制度.txt"
+      ],
+      "ground_truth_answer": "原则上不予报销；特殊情况需由分管副总裁特批。",
+      "id": "Q040",
+      "qtype": "条件约束与流程判断",
+      "difficulty": "易",
+      "evidence": "「未审批先行出差的，费用原则上不予报销，特殊情况需由分管副总裁特批。」",
+      "keywords": "原则上不予报销、分管副总裁特批",
+      "rubric": "答「可以报销」判错；漏掉特批例外条款算不完整。",
+      "expect_refusal": false,
+      "source": "D5《云枢科技差旅与费用报销管理制度》§1 出差审批"
+    },
+    {
+      "question": "在每月最后 3 个自然日，可以发布常规版本吗？可以做什么？",
+      "relevant_doc_titles": [
+        "D6_云枢云平台运维操作规范.txt"
+      ],
+      "ground_truth_answer": "不可以。该时段为变更冻结期，仅允许紧急修复（hotfix）。",
+      "id": "Q041",
+      "qtype": "条件约束与流程判断",
+      "difficulty": "中",
+      "evidence": "「每月最后 3 个自然日为变更冻结期，仅允许紧急修复（hotfix）。」",
+      "keywords": "变更冻结期、hotfix",
+      "rubric": "两个问点：能否常规发布（不能）与可做什么（仅 hotfix）。",
+      "expect_refusal": false,
+      "source": "D6《云枢云平台运维操作规范》§1 变更与发布"
+    },
+    {
+      "question": "如果业务确需将数据出境，需要完成哪些审批？若涉及个人信息出境，还有什么额外要求？",
+      "relevant_doc_titles": [
+        "D4_云枢科技信息安全与数据合规制度.txt"
+      ],
+      "ground_truth_answer": "须完成安全评估并报 CISO 与法务部门双签；涉及个人信息出境的，还须取得用户单独同意，并留存同意记录不少于 3 年。",
+      "id": "Q042",
+      "qtype": "条件约束与流程判断",
+      "difficulty": "难",
+      "evidence": "「确需出境的，须完成安全评估并报 CISO 与法务部门双签。涉及个人信息出境的，须取得用户单独同意，并留存同意记录不少于 3 年。」",
+      "keywords": "安全评估、双签、单独同意、不少于 3 年",
+      "rubric": "四要素召回：安全评估、CISO 与法务双签、单独同意、留存 3 年。",
+      "expect_refusal": false,
+      "source": "D4《云枢科技信息安全与数据合规制度》§3 数据跨境"
+    },
+    {
+      "question": "权限复核的频率是多少？离职人员的权限应在什么时候回收？",
+      "relevant_doc_titles": [
+        "D4_云枢科技信息安全与数据合规制度.txt"
+      ],
+      "ground_truth_answer": "权限每季度复核一次；离职人员权限须在离职生效当日回收。",
+      "id": "Q043",
+      "qtype": "条件约束与流程判断",
+      "difficulty": "易",
+      "evidence": "「权限每季度复核一次，离职人员权限须在离职生效当日回收。」",
+      "keywords": "每季度、离职生效当日",
+      "rubric": "「离职生效当日」不可模糊答成「及时」「尽快」。",
+      "expect_refusal": false,
+      "source": "D4《云枢科技信息安全与数据合规制度》§4 访问与审计"
+    },
+    {
+      "question": "核心接口错误率多少会触发告警？非工作时间的告警认领时限是多久？",
+      "relevant_doc_titles": [
+        "D6_云枢云平台运维操作规范.txt"
+      ],
+      "ground_truth_answer": "错误率阈值 1%，连续 5 分钟超过阈值即触发告警；非工作时间须在 30 分钟内认领。",
+      "id": "Q044",
+      "qtype": "条件约束与流程判断",
+      "difficulty": "中",
+      "evidence": "「核心接口错误率阈值 1%，连续 5 分钟超过阈值即告警。告警响应要求：工作时间内 15 分钟内认领，非工作时间 30 分钟内认领。」",
+      "keywords": "1%、连续 5 分钟、30 分钟",
+      "rubric": "须命中「连续 5 分钟」这一持续条件，并区分工作日 15 分钟与非工作日 30 分钟。",
+      "expect_refusal": false,
+      "source": "D6《云枢云平台运维操作规范》§5 监控与告警"
+    },
+    {
+      "question": "云枢科技 2026 年第一季度的营业收入是多少？",
+      "relevant_doc_titles": [],
+      "ground_truth_answer": "现有知识库未收录该信息，应拒答。知识库涵盖产品手册、定价政策、SLA、信息安全制度、差旅报销制度与运维规范六类文档，均不包含财务经营数据。",
+      "id": "Q045",
+      "qtype": "负样本与拒答",
+      "difficulty": "中",
+      "evidence": "无（本条为负样本，正确行为是拒答，不应在语料中找到答案）",
+      "keywords": "拒答",
+      "rubric": "期望行为：说明资料未收录并拒答；若给出任何具体营收数字即为幻觉。",
+      "expect_refusal": true,
+      "source": "与语料无关（考察拒答）"
+    },
+    {
+      "question": "云枢云平台的研发团队共有多少名工程师？",
+      "relevant_doc_titles": [],
+      "ground_truth_answer": "现有知识库未收录该信息，应拒答。语料中不含组织架构与人员规模类内容。",
+      "id": "Q046",
+      "qtype": "负样本与拒答",
+      "difficulty": "中",
+      "evidence": "无（本条为负样本，正确行为是拒答，不应在语料中找到答案）",
+      "keywords": "拒答",
+      "rubric": "期望行为：拒答。编造人数即判错。",
+      "expect_refusal": true,
+      "source": "与语料无关（考察拒答）"
+    },
+    {
+      "question": "云枢科技是否在深圳设有分公司？",
+      "relevant_doc_titles": [],
+      "ground_truth_answer": "现有知识库未收录该信息，应拒答。",
+      "id": "Q047",
+      "qtype": "负样本与拒答",
+      "difficulty": "易",
+      "evidence": "无（本条为负样本，正确行为是拒答，不应在语料中找到答案）",
+      "keywords": "拒答",
+      "rubric": "注意与差旅制度中的「一线城市（北京、上海、广州、深圳）」区分——那只是住宿标准城市分类，不能推出设有分公司。属于易被错误关联的陷阱题。",
+      "expect_refusal": true,
+      "source": "与语料无关（考察拒答）"
+    },
+    {
+      "question": "标准版支持的最高并发在线用户数是多少？",
+      "relevant_doc_titles": [
+        "D1_云枢云平台产品手册_v3.2.txt"
+      ],
+      "ground_truth_answer": "知识库中只有统一身份模块的用户数上限（标准版 500 名用户），并未定义「并发在线用户数」这一指标，应拒答或明确说明现有资料不覆盖该指标。",
+      "id": "Q048",
+      "qtype": "负样本与拒答",
+      "difficulty": "难",
+      "evidence": "「统一身份 NimbusID | 用户数 | 20 | 500 | 不限」",
+      "keywords": "拒答、无该指标",
+      "rubric": "近义概念陷阱：用户数上限 ≠ 并发在线数。若直接答 500 即判错。",
+      "expect_refusal": true,
+      "source": "D1《云枢云平台产品手册 v3.2》§3 模块规格上限"
+    },
+    {
+      "question": "员工境外出差每天的补贴金额是多少？",
+      "relevant_doc_titles": [
+        "D5_云枢科技差旅与费用报销管理制度.txt"
+      ],
+      "ground_truth_answer": "制度仅规定「境外补贴按当地标准表单执行」，未给出具体金额；正确行为是引导查阅当地标准表单，而非给出具体数字。",
+      "id": "Q049",
+      "qtype": "负样本与拒答",
+      "difficulty": "中",
+      "evidence": "「境外补贴按当地标准表单执行。」",
+      "keywords": "按当地标准表单执行",
+      "rubric": "部分可答型：命中「按当地标准表单执行」，但不给具体金额。",
+      "expect_refusal": true,
+      "source": "D5《云枢科技差旅与费用报销管理制度》§4 出差补贴"
+    },
+    {
+      "question": "云枢云平台是否已通过 ISO 27001 认证？",
+      "relevant_doc_titles": [],
+      "ground_truth_answer": "现有知识库未收录该信息，应拒答。信息安全制度中未提及任何认证资质。",
+      "id": "Q050",
+      "qtype": "负样本与拒答",
+      "difficulty": "中",
+      "evidence": "无（本条为负样本，正确行为是拒答，不应在语料中找到答案）",
+      "keywords": "拒答",
+      "rubric": "合规资质类幻觉高发题。编造认证状态即判错。",
+      "expect_refusal": true,
+      "source": "与语料无关（考察拒答）"
+    }
+  ]
+}

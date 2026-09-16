@@ -1,4 +1,6 @@
 import gc
+import threading
+
 from cachetools import TTLCache
 from FlagEmbedding import BGEM3FlagModel
 from app.config import Settings
@@ -13,6 +15,9 @@ class EmbeddingService:
             device=settings.bge_device,
         )
         self._query_cache = TTLCache(maxsize=1000, ttl=3600)#创建最多1000条、有效期1小时的查询缓存
+        # FlagEmbedding reuses fp16 buffers internally; concurrent forward
+        # passes race on them (wrong dtype errors), so GPU calls are serialized.
+        self._lock = threading.Lock()
 
     def cleanup(self):
         del self.model
@@ -22,14 +27,15 @@ class EmbeddingService:
             torch.cuda.empty_cache()
 
     def encode(self, texts: list[str], max_length: int = 512) -> list[dict]:
-        output = self.model.encode(
-            texts,
-            batch_size=4, #批量处理文本(batch_size=4)
-            max_length=max_length,
-            return_dense=True,
-            return_sparse=True,
-            return_colbert_vecs=False,
-        )
+        with self._lock:
+            output = self.model.encode(
+                texts,
+                batch_size=4, #批量处理文本(batch_size=4)
+                max_length=max_length,
+                return_dense=True,
+                return_sparse=True,
+                return_colbert_vecs=False,
+            )
         results = []
         for i in range(len(texts)):
             results.append({

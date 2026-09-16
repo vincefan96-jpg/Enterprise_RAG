@@ -5,13 +5,12 @@ import os
 import gc
 import atexit
 import signal
+import asyncio
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api import documents, query
 import torch
-
-SKIP_MODELS = os.getenv("SKIP_MODELS", "0") == "1"
 
 
 def _cleanup_models(app):
@@ -60,15 +59,21 @@ async def lifespan(app: FastAPI):
 
     from app.services.milvus_store import MilvusStore
     store = MilvusStore(settings)
-    try:
-        await store.init_collection()
-        app.state.milvus_ready = True
-    except Exception as e:
-        print(f"WARNING: Milvus init failed: {e}")
-        app.state.milvus_ready = False
+    for attempt in range(1, 4):
+        try:
+            await store.init_collection()
+            print("Milvus connected")
+            break
+        except Exception as e:
+            if attempt < 3:
+                print(f"WARNING: Milvus init failed (attempt {attempt}/3): {e}; retrying...")
+                await asyncio.sleep(2)
+            else:
+                print(f"WARNING: Milvus init failed: {e}; will retry lazily on first request")
+    app.state.milvus_ready = store.is_ready
     app.state.milvus_store = store
 
-    if not SKIP_MODELS:
+    if not settings.skip_models:
         from app.services.embedding_service import EmbeddingService
         try:
             embed = EmbeddingService(settings)
@@ -76,6 +81,7 @@ async def lifespan(app: FastAPI):
             app.state.embedding_ready = True
         except Exception as e:
             print(f"WARNING: Embedding init failed: {e}")
+            app.state.embedding_service = None
             app.state.embedding_ready = False
 
         from app.services.reranker_service import RerankerService
@@ -85,6 +91,7 @@ async def lifespan(app: FastAPI):
             app.state.reranker_ready = True
         except Exception as e:
             print(f"WARNING: Reranker init failed: {e}")
+            app.state.reranker_service = None
             app.state.reranker_ready = False
     else:
         app.state.embedding_service = None
@@ -99,14 +106,21 @@ async def lifespan(app: FastAPI):
         app.state.llm_ready = True
     except Exception as e:
         print(f"WARNING: LLM init failed: {e}")
+        app.state.llm_service = None
         app.state.llm_ready = False
 
     _register_cleanup(app)
 
-    yield
+    from app.agent.checkpointer import open_checkpointer
 
-    _cleanup_models(app)
-    store.close()
+    async with open_checkpointer(settings) as checkpointer:
+        app.state.agent_checkpointer = checkpointer
+        app.state.checkpointer_backend = type(checkpointer).__name__
+        try:
+            yield
+        finally:
+            _cleanup_models(app)
+            store.close()
 
 
 app = FastAPI(title="RAG Knowledge Base", version="1.0.0", lifespan=lifespan)
@@ -126,10 +140,12 @@ app.include_router(query.router)
 @app.get("/api/health")
 async def health():
     state = app.state
+    store = getattr(state, "milvus_store", None)
     return {
         "api": "ok",
-        "milvus": getattr(state, "milvus_ready", False),
+        "milvus": bool(store and store.is_ready),
         "embedding": getattr(state, "embedding_ready", False),
         "reranker": getattr(state, "reranker_ready", False),
         "llm": getattr(state, "llm_ready", False),
+        "checkpointer": getattr(state, "checkpointer_backend", None),
     }
